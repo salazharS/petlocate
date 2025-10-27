@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Manager - Administração de Tokens</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .admin-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #667eea;
+        }
+        
+        .admin-details h2 {
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+        
+        .admin-details p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .token-generator {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .token-generator h3 {
+            color: #34495e;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .token-display {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .token-value {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            letter-spacing: 2px;
+        }
+        
+        .token-placeholder {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .users-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .section-header h3 {
+            color: #34495e;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+            font-size: 20px;
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .user-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #667eea;
+            object-fit: cover;
+        }
+        
+        .user-info h4 {
+            color: #34495e;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        
+        .user-info p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .user-tokens {
+            margin-bottom: 15px;
+        }
+        
+        .tokens-label {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .token-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .token-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .token-remove {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .token-remove:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .no-tokens {
+            color: #95a5a6;
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state h4 {
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+        
+        .modal-message {
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .modal-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .toast {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-left: 5px solid;
+            min-width: 320px;
+            max-width: 420px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            border-left-color: #10b981;
+        }
+        
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+        
+        .toast.info {
+            border-left-color: #3b82f6;
+        }
+        
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+        
+        .toast-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #1f2937;
+            font-size: 16px;
+        }
+        
+        .toast-message {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .toast-close:hover {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-actions {
+                flex-direction: column;
+            }
+            
+            .btn-small {
+                flex: none;
+                width: 100%;
+            }
+            
+            .token-generator {
+                padding: 20px;
+            }
+            
+            .users-section {
+                padding: 20px;
+            }
+            
+            .modal {
+                margin: 20px;
+                padding: 25px;
+            }
+            
+            .toast {
+                min-width: 280px;
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Modal de Atribuição de Token -->
+    <div class="modal-overlay" id="assignTokenModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">🎫</div>
+                <div class="modal-title">Atribuir Token</div>
+                <div class="modal-message" id="assignModalMessage">
+                    Deseja atribuir o token gerado para este usuário?
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAssignModal()">Cancelar</button>
+                <button class="btn btn-success" id="confirmAssignBtn">Atribuir Token</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Remoção -->
+    <div class="modal-overlay" id="removeTokenModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">⚠️</div>
+                <div class="modal-title">Remover Token</div>
+                <div class="modal-message" id="removeModalMessage">
+                    Tem certeza que deseja remover este token do usuário?
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeRemoveModal()">Cancelar</button>
+                <button class="btn btn-warning" id="confirmRemoveBtn">Remover Token</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="admin-info">
+                <img id="adminAvatar" class="admin-avatar" src="https://via.placeholder.com/50" alt="Avatar do administrador">
+                <div class="admin-details">
+                    <h2 id="adminName">Carregando...</h2>
+                    <p id="adminEmail">Carregando...</p>
+                </div>
+                <span class="admin-badge">ADMIN</span>
+            </div>
+            <div class="header-actions">
+                <a href="./dashboard.html" class="btn btn-primary">
+                    🏠 Dashboard
+                </a>
+                <button onclick="logout()" class="btn btn-secondary">
+                    🚪 Sair
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="token-generator">
+                <h3>🎫 Gerador de Tokens</h3>
+                <div class="token-display" id="tokenDisplay">
+                    <div class="token-placeholder">Clique em "Gerar Token" para criar um novo token</div>
+                </div>
+                <button onclick="generateToken()" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">
+                    🎲 Gerar Novo Token
+                </button>
+                <button onclick="copyToken()" class="btn btn-success" id="copyTokenBtn" style="width: 100%; display: none;">
+                    📋 Copiar Token
+                </button>
+            </div>
+
+            <div class="users-section">
+                <div class="section-header">
+                    <h3>👥 Usuários Cadastrados</h3>
+                    <div id="usersCount" style="color: #7f8c8d; font-size: 14px;">
+                        Carregando...
+                    </div>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nome, email ou token...">
+                    <div class="search-icon">🔍</div>
+                </div>
+                
+                <div id="loadingUsers" class="loading">
+                    Carregando usuários...
+                </div>
+                
+                <div id="usersGrid" class="users-grid" style="display: none;">
+                    <!-- User cards will be dynamically inserted here -->
+                </div>
+                
+                <div id="emptyUsers" class="empty-state" style="display: none;">
+                    <h4>Nenhum usuário encontrado</h4>
+                    <p>Não há usuários cadastrados no sistema ou nenhum usuário corresponde à sua busca.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const ADMIN_USER_ID = '5i71w8HWXNfCypHLkNdzPYxCP7q2';
+        const ADMIN_EMAIL = 'felipelulalublanski@gmail.com';
+        let currentUser = null;
+        let allUsers = [];
+        let currentToken = null;
+        let selectedUserId = null;
+        let selectedTokenToRemove = null;
+
+        // Authentication state observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Verificar se é o usuário administrador (por ID ou email)
+                if (user.uid !== ADMIN_USER_ID && user.email !== ADMIN_EMAIL) {
+                    console.log('Usuário tentando acessar:', user.uid, user.email);
+                    console.log('Admin esperado:', ADMIN_USER_ID, ADMIN_EMAIL);
+                    showToast('error', 'Acesso Negado', 'Você não tem permissão para acessar esta página.');
+                    setTimeout(() => {
+                        window.location.href = './dashboard.html';
+                    }, 2000);
+                    return;
+                }
+                
+                currentUser = user;
+                console.log('Administrador logado:', user.email);
+                
+                // Load admin info
+                loadAdminInfo(user);
+                
+                // Load all users
+                loadAllUsers();
+                
+            } else {
+                console.log('Usuário não logado');
+                window.location.href = '../index.html';
+            }
+        });
+
+        // Load admin information
+        function loadAdminInfo(user) {
+            document.getElementById('adminName').textContent = user.displayName || 'Administrador';
+            document.getElementById('adminEmail').textContent = user.email;
+            
+            if (user.photoURL) {
+                document.getElementById('adminAvatar').src = user.photoURL;
+            }
+        }
+
+        // Generate random token (9 characters: numbers, lowercase, uppercase)
+        function generateToken() {
+            const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let token = '';
+            for (let i = 0; i < 9; i++) {
+                token += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            currentToken = token;
+            
+            const tokenDisplay = document.getElementById('tokenDisplay');
+            tokenDisplay.innerHTML = `
+                <div class="token-value">${token}</div>
+                <div style="font-size: 12px; color: #95a5a6; margin-top: 5px;">Token gerado com sucesso!</div>
+            `;
+            
+            document.getElementById('copyTokenBtn').style.display = 'block';
+            
+            showToast('success', 'Token Gerado', `Novo token criado: ${token}`);
+        }
+
+        // Copy token to clipboard
+        async function copyToken() {
+            if (!currentToken) {
+                showToast('error', 'Erro', 'Nenhum token foi gerado ainda.');
+                return;
+            }
+            
+            try {
+                await navigator.clipboard.writeText(currentToken);
+                showToast('success', 'Copiado', 'Token copiado para a área de transferência!');
+            } catch (error) {
+                console.error('Erro ao copiar token:', error);
+                showToast('error', 'Erro', 'Não foi possível copiar o token.');
+            }
+        }
+
+        // Load all users from Firestore
+        async function loadAllUsers() {
+            const loadingElement = document.getElementById('loadingUsers');
+            const gridElement = document.getElementById('usersGrid');
+            const emptyElement = document.getElementById('emptyUsers');
+            const countElement = document.getElementById('usersCount');
+
+            try {
+                const usersSnapshot = await db.collection('users').get();
+                
+                allUsers = [];
+                usersSnapshot.forEach(doc => {
+                    const userData = doc.data();
+                    allUsers.push({ 
+                        id: doc.id, 
+                        ...userData,
+                        tokens: userData.tokens || []
+                    });
+                });
+
+                loadingElement.style.display = 'none';
+
+                if (allUsers.length === 0) {
+                    emptyElement.style.display = 'block';
+                    countElement.textContent = 'Nenhum usuário encontrado';
+                } else {
+                    gridElement.style.display = 'grid';
+                    countElement.textContent = `${allUsers.length} usuário${allUsers.length !== 1 ? 's' : ''} encontrado${allUsers.length !== 1 ? 's' : ''}`;
+                    
+                    displayUsers(allUsers);
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+                loadingElement.innerHTML = '<p style="color: #e74c3c;">Erro ao carregar usuários.</p>';
+            }
+        }
+
+        // Display users in grid
+        function displayUsers(users) {
+            const gridElement = document.getElementById('usersGrid');
+            gridElement.innerHTML = users.map(createUserCard).join('');
+        }
+
+        // Create user card HTML
+        function createUserCard(user) {
+            const photoUrl = user.photoURL || user.photo || 'https://via.placeholder.com/60';
+            const tokens = user.tokens || [];
+            
+            let tokensHtml = '';
+            if (tokens.length > 0) {
+                tokensHtml = tokens.map(token => `
+                    <div class="token-item">
+                        ${token}
+                        <button class="token-remove" onclick="removeTokenFromUser('${user.id}', '${token}')" title="Remover token">
+                            ×
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                tokensHtml = '<div class="no-tokens">Nenhum token atribuído</div>';
+            }
+
+            return `
+                <div class="user-card">
+                    <div class="user-header">
+                        <img src="${photoUrl}" alt="${user.displayName || 'Usuário'}" class="user-avatar">
+                        <div class="user-info">
+                            <h4>${user.displayName || 'Nome não informado'}</h4>
+                            <p>${user.email || 'Email não informado'}</p>
+                        </div>
+                    </div>
+                    <div class="user-tokens">
+                        <div class="tokens-label">🎫 Tokens (${tokens.length})</div>
+                        <div class="token-list">
+                            ${tokensHtml}
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button onclick="assignTokenToUser('${user.id}', '${user.displayName || 'Usuário'}')" class="btn btn-success btn-small">
+                            ➕ Atribuir Token
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Assign token to user
+        function assignTokenToUser(userId, userName) {
+            if (!currentToken) {
+                showToast('error', 'Erro', 'Você precisa gerar um token primeiro.');
+                return;
+            }
+            
+            selectedUserId = userId;
+            document.getElementById('assignModalMessage').textContent = 
+                `Deseja atribuir o token "${currentToken}" para o usuário "${userName}"?`;
+            
+            document.getElementById('assignTokenModal').classList.add('show');
+        }
+
+        // Confirm token assignment
+        async function confirmAssignToken() {
+            if (!selectedUserId || !currentToken) {
+                showToast('error', 'Erro', 'Dados inválidos para atribuição.');
+                return;
+            }
+            
+            try {
+                // Get current user data
+                const userDoc = await db.collection('users').doc(selectedUserId).get();
+                if (!userDoc.exists) {
+                    showToast('error', 'Erro', 'Usuário não encontrado.');
+                    return;
+                }
+                
+                const userData = userDoc.data();
+                const currentTokens = userData.tokens || [];
+                
+                // Check if token already exists
+                if (currentTokens.includes(currentToken)) {
+                    showToast('warning', 'Aviso', 'Este token já está atribuído a este usuário.');
+                    closeAssignModal();
+                    return;
+                }
+                
+                // Add new token
+                const updatedTokens = [...currentTokens, currentToken];
+                
+                await db.collection('users').doc(selectedUserId).update({
+                    tokens: updatedTokens
+                });
+                
+                showToast('success', 'Token Atribuído', `Token "${currentToken}" atribuído com sucesso!`);
+                
+                // Clear current token and reset display
+                currentToken = null;
+                document.getElementById('tokenDisplay').innerHTML = 
+                    '<div class="token-placeholder">Clique em "Gerar Token" para criar um novo token</div>';
+                document.getElementById('copyTokenBtn').style.display = 'none';
+                
+                // Reload users
+                loadAllUsers();
+                
+                closeAssignModal();
+                
+            } catch (error) {
+                console.error('Erro ao atribuir token:', error);
+                showToast('error', 'Erro', 'Não foi possível atribuir o token.');
+            }
+        }
+
+        // Remove token from user
+        function removeTokenFromUser(userId, token) {
+            selectedUserId = userId;
+            selectedTokenToRemove = token;
+            
+            const user = allUsers.find(u => u.id === userId);
+            const userName = user ? (user.displayName || 'Usuário') : 'Usuário';
+            
+            document.getElementById('removeModalMessage').textContent = 
+                `Tem certeza que deseja remover o token "${token}" do usuário "${userName}"?`;
+            
+            document.getElementById('removeTokenModal').classList.add('show');
+        }
+
+        // Confirm token removal
+        async function confirmRemoveToken() {
+            if (!selectedUserId || !selectedTokenToRemove) {
+                showToast('error', 'Erro', 'Dados inválidos para remoção.');
+                return;
+            }
+            
+            try {
+                // Get current user data
+                const userDoc = await db.collection('users').doc(selectedUserId).get();
+                if (!userDoc.exists) {
+                    showToast('error', 'Erro', 'Usuário não encontrado.');
+                    return;
+                }
+                
+                const userData = userDoc.data();
+                const currentTokens = userData.tokens || [];
+                
+                // Remove token
+                const updatedTokens = currentTokens.filter(token => token !== selectedTokenToRemove);
+                
+                await db.collection('users').doc(selectedUserId).update({
+                    tokens: updatedTokens
+                });
+                
+                showToast('success', 'Token Removido', `Token "${selectedTokenToRemove}" removido com sucesso!`);
+                
+                // Reload users
+                loadAllUsers();
+                
+                closeRemoveModal();
+                
+            } catch (error) {
+                console.error('Erro ao remover token:', error);
+                showToast('error', 'Erro', 'Não foi possível remover o token.');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                displayUsers(allUsers);
+                return;
+            }
+            
+            const filteredUsers = allUsers.filter(user => {
+                const name = (user.displayName || '').toLowerCase();
+                const email = (user.email || '').toLowerCase();
+                const tokens = (user.tokens || []).join(' ').toLowerCase();
+                
+                return name.includes(searchTerm) || 
+                       email.includes(searchTerm) || 
+                       tokens.includes(searchTerm);
+            });
+            
+            displayUsers(filteredUsers);
+            
+            const countElement = document.getElementById('usersCount');
+            if (filteredUsers.length === 0) {
+                countElement.textContent = 'Nenhum usuário encontrado';
+                document.getElementById('emptyUsers').style.display = 'block';
+                document.getElementById('usersGrid').style.display = 'none';
+            } else {
+                countElement.textContent = `${filteredUsers.length} usuário${filteredUsers.length !== 1 ? 's' : ''} encontrado${filteredUsers.length !== 1 ? 's' : ''}`;
+                document.getElementById('emptyUsers').style.display = 'none';
+                document.getElementById('usersGrid').style.display = 'grid';
+            }
+        });
+
+        // Modal functions
+        function closeAssignModal() {
+            document.getElementById('assignTokenModal').classList.remove('show');
+            selectedUserId = null;
+        }
+
+        function closeRemoveModal() {
+            document.getElementById('removeTokenModal').classList.remove('show');
+            selectedUserId = null;
+            selectedTokenToRemove = null;
+        }
+
+        // Event listeners for modal actions
+        document.getElementById('confirmAssignBtn').addEventListener('click', confirmAssignToken);
+        document.getElementById('confirmRemoveBtn').addEventListener('click', confirmRemoveToken);
+
+        // Close modals when clicking outside
+        document.getElementById('assignTokenModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAssignModal();
+            }
+        });
+
+        document.getElementById('removeTokenModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRemoveModal();
+            }
+        });
+
+        // Logout function
+        function logout() {
+            auth.signOut().then(() => {
+                console.log('Administrador deslogado');
+                window.location.href = '../index.html';
+            }).catch((error) => {
+                console.error('Erro ao fazer logout:', error);
+            });
+        }
+
+        // Toast notification system
+        function showToast(type, title, message) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                info: 'ℹ️',
+                warning: '⚠️'
+            };
+            
+            const titles = {
+                success: title || 'Sucesso',
+                error: title || 'Erro',
+                info: title || 'Informação',
+                warning: title || 'Aviso'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type]}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="removeToast(this.parentElement)">×</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Auto remove after 6 seconds
+            setTimeout(() => removeToast(toast), 6000);
+        }
+        
+        function removeToast(toast) {
+            if (toast && toast.parentElement) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                }, 400);
+            }
+        }
+    </script>
+</body>
+</html>
+

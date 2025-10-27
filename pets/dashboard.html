@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Manager - Meus Pets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #667eea;
+        }
+        .user-details h2 {
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+        .user-details p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border: 1px solid #c0392b;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pets-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .section-header h3 {
+            color: #34495e;
+            font-size: 24px;
+        }
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .pet-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        .pet-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            overflow: hidden;
+        }
+        .pet-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .pet-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #34495e;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .pet-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .pet-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            flex: 1;
+            min-width: 70px;
+            text-align: center;
+        }
+        .btn-qr {
+            background: #f39c12;
+            color: white;
+        }
+        .btn-qr:hover {
+            background: #e67e22;
+            transform: translateY(-1px);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        .empty-state h4 {
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        /* Seção de Tokens do Usuário */
+        .tokens-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .token-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 160px;
+            min-width: 160px;
+            max-width: 160px;
+        }
+        .token-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .token-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+        .token-card:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+        .token-code {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            word-break: break-all;
+        }
+        .token-status {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .info-box {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #0c5460;
+        }
+        
+        /* Histórico de Localizações - Melhorado */
+        .location-history {
+            margin-top: 20px;
+        }
+        .location-item {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .location-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+        .location-item.new {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+        }
+        .location-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .location-pet-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .location-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .location-pet {
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 8px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .location-address {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .location-coordinates {
+            color: #95a5a6;
+            font-size: 12px;
+            margin-bottom: 6px;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .location-time {
+            color: #95a5a6;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .location-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .btn-map {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-map:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        .btn-delete {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        /* Toast Notifications - Melhorado */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-left: 5px solid;
+            min-width: 320px;
+            max-width: 420px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .toast.success {
+            border-left-color: #10b981;
+            background: linear-gradient(rgba(255, 255, 255, 1) 100%);
+        }
+        .toast.error {
+            border-left-color: #ef4444;
+            background: linear-gradient(rgba(255, 255, 255, 1) 100%);
+        }
+        .toast.info {
+            border-left-color: #3b82f6;
+            background: linear-gradient(rgba(255, 255, 255, 1) 100%);
+        }
+        .toast.warning {
+            border-left-color: #f59e0b;
+            background: linear-gradient(rgba(255, 255, 255, 1) 100%);
+        }
+        .toast-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .toast-content {
+            flex: 1;
+        }
+        .toast-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #1f2937;
+            font-size: 16px;
+        }
+        .toast-message {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .toast-close:hover {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        /* Modal de Confirmação */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+        .modal-message {
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        .modal-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Novo Modal para QR Code */
+        #qrCodeModal .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        #qrCodeDisplay {
+            width: 200px; /* Tamanho fixo para o QR Code */
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        #qrCodeDisplay img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        #qrCodeModal .modal-actions {
+            margin-top: 25px;
+        }
+
+        /* NOVO: Modal de Seleção de Token - Melhorado */
+        .token-selector-modal .modal {
+            max-width: 600px;
+        }
+        
+        .token-selector-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            justify-content: center;
+        }
+        
+        .token-selector-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+            width: 140px;
+            min-width: 140px;
+            max-width: 140px;
+        }
+        
+        .token-selector-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .token-selector-card.selected {
+            border-color: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        .token-selector-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+        
+        .token-selector-card:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+        
+        .token-selector-code {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            word-break: break-all;
+        }
+        
+        .token-selector-label {
+            font-size: 11px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .token-selector-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+        
+        .token-selector-loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .token-validation-feedback {
+            text-align: center;
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .token-validation-feedback.success {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(39, 174, 96, 0.2);
+        }
+        
+        .token-validation-feedback.error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        .token-validation-feedback.hidden {
+            display: none;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsividade Mobile */
+        @media (max-width: 768px) {
+            body { 
+                padding: 10px; 
+            }
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 15px;
+            }
+            .pets-grid {
+                grid-template-columns: 1fr;
+            }
+            .pet-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .btn-small {
+                flex: none;
+                width: 100%;
+            }
+            .location-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                padding: 20px;
+            }
+            .location-pet-avatar {
+                align-self: center;
+            }
+            .location-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .btn-map, .btn-delete {
+                flex: 1;
+                min-width: 120px;
+            }
+            .pets-section {
+                padding: 20px;
+                margin: 10px 0;
+            }
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .section-header h3 {
+                font-size: 20px;
+            }
+            .toast {
+                min-width: 280px;
+                max-width: 320px;
+            }
+            .modal {
+                margin: 20px;
+                padding: 25px;
+            }
+            .token-selector-grid {
+                gap: 8px;
+                justify-content: center;
+            }
+            
+            .token-selector-card {
+                width: 120px;
+                min-width: 120px;
+                max-width: 120px;
+                padding: 12px 16px;
+            }
+            
+            .token-card {
+                width: 140px;
+                min-width: 140px;
+                max-width: 140px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pet-card {
+                padding: 15px;
+            }
+            .pet-name {
+                font-size: 16px;
+            }
+            .pet-info {
+                font-size: 13px;
+            }
+            .btn-small {
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+            .location-item {
+                padding: 15px;
+            }
+            .location-pet {
+                font-size: 16px;
+            }
+            .location-address {
+                font-size: 13px;
+            }
+            .location-coordinates {
+                font-size: 11px;
+            }
+            .location-time {
+                font-size: 11px;
+            }
+            .pets-section {
+                padding: 15px;
+                margin: 5px 0;
+            }
+            .section-header h3 {
+                font-size: 18px;
+            }
+            .toast {
+                min-width: 260px;
+                max-width: 300px;
+                padding: 16px 20px;
+            }
+            .token-selector-card {
+                width: 100px;
+                min-width: 100px;
+                max-width: 100px;
+                padding: 10px 12px;
+            }
+            
+            .token-selector-code {
+                font-size: 12px;
+                letter-spacing: 0.5px;
+            }
+            
+            .token-card {
+                width: 120px;
+                min-width: 120px;
+                max-width: 120px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Modal de Confirmação -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">⚠️</div>
+                <div class="modal-title">Confirmar Exclusão</div>
+                <div class="modal-message" id="confirmMessage">
+                    Tem certeza que deseja excluir esta localização? Esta ação não pode ser desfeita.
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Novo Modal para QR Code -->
+    <div class="modal-overlay" id="qrCodeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">📱</div>
+                <div class="modal-title">QR Code do Pet</div>
+                <div class="modal-message">Escaneie este QR Code para acessar as informações do pet.</div>
+            </div>
+            <div class="modal-content">
+                <div id="qrCodeDisplay"></div>
+                <a class="btn btn-primary" id="downloadQrCodeBtn" download="QRCode.png" style="margin-top: 15px;">
+                    ⬇️ Baixar QR Code
+                </a>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" style="margin-top: 0px;" onclick="closeQrCodeModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de Seleção de Token -->
+    <div class="modal-overlay token-selector-modal" id="tokenSelectorModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">🎫</div>
+                <div class="modal-title">Selecione um Token</div>
+                <div class="modal-message">Escolha um dos seus tokens disponíveis para adicionar um novo pet.</div>
+            </div>
+            
+            <div class="token-validation-feedback hidden" id="tokenSelectorFeedback"></div>
+            
+            <div id="tokenSelectorLoading" class="token-selector-loading">
+                Carregando seus tokens...
+            </div>
+            
+            <div id="tokenSelectorContent" style="display: none;">
+                <div class="token-selector-grid" id="tokenSelectorGrid">
+                    <!-- Tokens serão inseridos aqui dinamicamente -->
+                </div>
+            </div>
+            
+            <div id="tokenSelectorEmpty" class="token-selector-empty" style="display: none;">
+                <h4>Nenhum token disponível</h4>
+                <p>Você não possui tokens no momento. Entre em contato com o administrador para obter tokens.</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeTokenSelectorModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão de Pet -->
+    <div class="modal-overlay" id="deletePetModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">🗑️</div>
+                <div class="modal-title">Confirmar Exclusão do Pet</div>
+                <div class="modal-message" id="deletePetMessage">
+                    Tem certeza que deseja excluir este pet? Esta ação não pode ser desfeita.
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeletePetModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmDeletePetBtn">Excluir Pet</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="user-info">
+                <img id="userAvatar" class="user-avatar" src="https://via.placeholder.com/50" alt="Avatar do usuário">
+                <div class="user-details">
+                    <h2 id="userName">Carregando...</h2>
+                    <p id="userEmail">Carregando...</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button onclick="showTokenSelectorModal()" class="btn btn-primary">
+                    📱 Adicionar Pet
+                </button>
+                <button onclick="toggleTokensVisibility()" class="btn btn-secondary" id="toggleTokensBtn">
+                    🎫 Meus Tokens
+                </button>
+                <button onclick="window.location.href='admin_tokens.html'" class="btn btn-warning" id="adminButton" style="display: none;">
+                    ⚙️ Administração
+                </button>
+                <button onclick="logout()" class="btn btn-danger">
+                    🚪 Sair
+                </button>
+            </div>
+        </div>
+
+        <div class="pets-section">
+            <div class="section-header">
+                <h3>Meus Pets</h3>
+                <div id="petsCount" style="color: #7f8c8d; font-size: 14px;">
+                    Carregando...
+                </div>
+            </div>
+            
+            <div id="loadingPets" class="loading">
+                Carregando seus pets...
+            </div>
+            
+            <div id="petsGrid" class="pets-grid" style="display: none;">
+                <!-- Pet cards will be dynamically inserted here -->
+            </div>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <h4>Você ainda não tem pets cadastrados</h4>
+                <p>Clique em "Adicionar Pet" para cadastrar seu primeiro pet.</p>
+                <br>
+                <button onclick="showTokenSelectorModal()" class="btn btn-primary">
+                    ➕ Cadastrar Primeiro Pet
+                </button>
+            </div>
+        </div>
+
+        <div class="pets-section location-history">
+            <div class="section-header">
+                <h3>📍 Histórico de Localizações</h3>
+                <div id="locationsCount" style="color: #7f8c8d; font-size: 14px;">
+                    Carregando...
+                </div>
+            </div>
+            
+            <div id="loadingLocations" class="loading">
+                Carregando histórico de localizações...
+            </div>
+            
+            <div id="locationsContainer" style="display: none;">
+                <!-- Location items will be dynamically inserted here -->
+            </div>
+            
+            <div id="emptyLocations" class="empty-state" style="display: none;">
+                <h4>Nenhuma localização registrada</h4>
+                <p>Quando alguém encontrar um de seus pets e enviar a localização, ela aparecerá aqui.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Tokens do Usuário -->
+    <div class="modal-overlay" id="tokensModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🎫 Meus Tokens</h3>
+            </div>
+            <div class="modal-body">
+                <div id="loadingTokens" class="loading" style="display: none;">
+                    Carregando seus tokens...
+                </div>
+                
+                <div id="tokensContainer" style="display: none;">
+                    <div id="tokensList" class="tokens-grid">
+                        <!-- Tokens will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div id="emptyTokens" class="empty-state" style="display: none;">
+                    <h4>Nenhum token disponível</h4>
+                    <p>Você não possui tokens no momento. Entre em contato com o administrador para obter tokens</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeTokensModal()" class="btn btn-secondary" style="margin-top:0.5;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js"></script>
+    <!-- Incluindo qrcode.js -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script>
+
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const messaging = firebase.messaging();
+
+        const ADMIN_USER_ID = '5i71w8HWXNfCypHLkNdzPYxCP7q2';
+        const ADMIN_EMAIL = 'felipelulalublanski@gmail.com';
+        let currentUser = null;
+        let locationListener = null;
+        let selectedToken = null;
+        
+        // Authentication state observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                console.log('Usuário logado:', user.email);
+                
+                // Criar/atualizar documento do usuário no Firestore automaticamente
+                createOrUpdateUserDocument(user);
+                
+                // Load user info
+                loadUserInfo(user);
+                
+                // Load pets
+                loadUserPets(user.uid);
+                
+                // Load location history
+                loadLocationHistory(user.uid);
+                
+                console.log('Sistema carregado com sucesso para:', user.email);
+                
+            } else {
+                console.log('Usuário não logado, redirecionando...');
+                window.location.href = './index.html';
+            }
+        });
+
+        // Logout function
+        function logout() {
+            auth.signOut().then(() => {
+                console.log('Usuário deslogado');
+                window.location.href = '../index.html';
+            }).catch((error) => {
+                console.error('Erro ao fazer logout:', error);
+            });
+        }
+
+        // Create or update user document in Firestore
+        async function createOrUpdateUserDocument(user) {
+            try {
+                const userDocRef = db.collection('users').doc(user.uid);
+                const userDoc = await userDocRef.get();
+                
+                if (!userDoc.exists) {
+                    // Create new user document
+                    const userData = {
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName || '',
+                        photoURL: user.photoURL || '',
+                        tokens: [], // Array vazio de tokens inicialmente
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await userDocRef.set(userData);
+                    console.log('Novo documento do usuário criado no Firestore');
+                } else {
+                    // Update existing user document
+                    const updateData = {
+                        email: user.email,
+                        displayName: user.displayName || '',
+                        photoURL: user.photoURL || '',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await userDocRef.update(updateData);
+                    console.log('Documento do usuário atualizado no Firestore');
+                }
+            } catch (error) {
+                console.error('Erro ao criar/atualizar documento do usuário:', error);
+            }
+        }
+
+        // Load user information
+        function loadUserInfo(user) {
+            document.getElementById('userName').textContent = user.displayName || 'Usuário';
+            document.getElementById('userEmail').textContent = user.email;
+            
+            if (user.photoURL) {
+                document.getElementById('userAvatar').src = user.photoURL;
+            }
+            
+            // Mostrar botão de administração apenas para o admin
+            if (user.uid === ADMIN_USER_ID || user.email === ADMIN_EMAIL) {
+                document.getElementById('adminButton').style.display = 'inline-flex';
+            }
+            
+            // Carregar tokens do usuário
+            loadUserTokens(user.uid);
+        }
+
+        // NOVA FUNÇÃO: Mostrar modal de seleção de token
+        async function showTokenSelectorModal() {
+            document.getElementById('tokenSelectorModal').classList.add('show');
+            await loadTokensForSelector();
+        }
+
+        // NOVA FUNÇÃO: Fechar modal de seleção de token
+        function closeTokenSelectorModal() {
+            document.getElementById('tokenSelectorModal').classList.remove('show');
+            selectedToken = null;
+            // Limpar feedback
+            const feedback = document.getElementById('tokenSelectorFeedback');
+            feedback.classList.add('hidden');
+        }
+
+        // NOVA FUNÇÃO: Carregar tokens para o seletor
+        async function loadTokensForSelector() {
+            const loadingElement = document.getElementById('tokenSelectorLoading');
+            const contentElement = document.getElementById('tokenSelectorContent');
+            const emptyElement = document.getElementById('tokenSelectorEmpty');
+            const gridElement = document.getElementById('tokenSelectorGrid');
+            
+            try {
+                loadingElement.style.display = 'block';
+                contentElement.style.display = 'none';
+                emptyElement.style.display = 'none';
+                
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    const tokens = userData.tokens || [];
+                    
+                    loadingElement.style.display = 'none';
+                    
+                    if (tokens.length > 0) {
+                        displayTokenSelector(tokens);
+                        contentElement.style.display = 'block';
+                    } else {
+                        emptyElement.style.display = 'block';
+                    }
+                } else {
+                    loadingElement.style.display = 'none';
+                    emptyElement.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar tokens para seletor:', error);
+                loadingElement.style.display = 'none';
+                emptyElement.style.display = 'block';
+                showTokenSelectorFeedback('error', 'Erro ao carregar tokens. Tente novamente.');
+            }
+        }
+
+        // NOVA FUNÇÃO: Exibir tokens no seletor
+        function displayTokenSelector(tokens) {
+            const gridElement = document.getElementById('tokenSelectorGrid');
+            gridElement.innerHTML = '';
+            
+            tokens.forEach((token, index) => {
+                const tokenCard = document.createElement('div');
+                tokenCard.className = 'token-selector-card';
+                tokenCard.onclick = () => selectToken(token, tokenCard);
+                tokenCard.innerHTML = `
+                    <div class="token-selector-code">${token}</div>
+                    <div class="token-selector-label">Clique para usar</div>
+                `;
+                gridElement.appendChild(tokenCard);
+            });
+        }
+
+        // NOVA FUNÇÃO: Selecionar token
+        async function selectToken(token, cardElement) {
+            try {
+                // Remover seleção anterior
+                document.querySelectorAll('.token-selector-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Marcar como selecionado
+                cardElement.classList.add('selected');
+                selectedToken = token;
+                
+                // Mostrar feedback de validação
+                showTokenSelectorFeedback('success', `Token ${token} selecionado! Validando...`);
+                
+                // Validar e consumir token
+                await validateAndConsumeToken(token);
+                
+            } catch (error) {
+                console.error('Erro ao selecionar token:', error);
+                showTokenSelectorFeedback('error', 'Erro ao processar token. Tente novamente.');
+            }
+        }
+
+        // NOVA FUNÇÃO: Validar e consumir token
+        async function validateAndConsumeToken(token) {
+            try {
+                console.log('Validando token:', token);
+                console.log('Usuário atual:', currentUser.uid);
+                
+                // Get current user data to check if token is assigned to them
+                const userDoc = await db.collection("users").doc(currentUser.uid).get();
+                
+                if (!userDoc.exists) {
+                    console.log('Documento do usuário não existe');
+                    showTokenSelectorFeedback('error', "Usuário não encontrado no sistema.");
+                    return;
+                }
+                
+                const userData = userDoc.data();
+                const userTokens = userData.tokens || [];
+                
+                console.log('Tokens do usuário:', userTokens);
+                console.log('Token inserido:', token);
+                
+                // Verificar se o token existe (case-sensitive e trim)
+                const tokenTrimmed = token.trim();
+                const tokenExists = userTokens.some(t => t.trim() === tokenTrimmed);
+                
+                console.log('Token após trim:', tokenTrimmed);
+                console.log('Token existe após verificação?', tokenExists);
+                
+                if (tokenExists) {
+                    // Token é válido para este usuário
+                    showTokenSelectorFeedback('success', "Token válido! Redirecionando...");
+                    
+                    // Remover o token do array de tokens do usuário (consumir)
+                    const updatedTokens = userTokens.filter(t => t.trim() !== tokenTrimmed);
+                    await db.collection("users").doc(currentUser.uid).update({
+                        tokens: updatedTokens
+                    });
+                    
+                    console.log('Token consumido, redirecionando...');
+                    
+                    // Redirecionar para a página de adicionar pet após um pequeno atraso
+                    setTimeout(() => {
+                        window.location.href = "./add_edit_pet.html";
+                    }, 1500);
+                    
+                } else {
+                    console.log('Token não encontrado nos tokens do usuário');
+                    showTokenSelectorFeedback('error', "Token inválido ou não atribuído a você.");
+                }
+                
+            } catch (error) {
+                console.error('Erro ao validar token:', error);
+                showTokenSelectorFeedback('error', 'Erro ao validar token. Tente novamente.');
+            }
+        }
+
+        // NOVA FUNÇÃO: Mostrar feedback no seletor de token
+        function showTokenSelectorFeedback(type, message) {
+            const feedback = document.getElementById('tokenSelectorFeedback');
+            
+            feedback.classList.remove('hidden', 'success', 'error');
+            feedback.classList.add(type);
+            feedback.textContent = message;
+        }
+
+        // Load user's pets
+        async function loadUserPets(userId) {
+            const loadingElement = document.getElementById('loadingPets');
+            const gridElement = document.getElementById('petsGrid');
+            const emptyElement = document.getElementById('emptyState');
+            const countElement = document.getElementById('petsCount');
+
+            try {
+                // Try both ownerID and ownerId for compatibility
+                let petsSnapshot = await db.collection('pets').where('ownerID', '==', userId).get();
+                
+                if (petsSnapshot.size === 0) {
+                    petsSnapshot = await db.collection('pets').where('ownerId', '==', userId).get();
+                }
+
+                const pets = [];
+                petsSnapshot.forEach(doc => {
+                    pets.push({ id: doc.id, ...doc.data() });
+                });
+
+                loadingElement.style.display = 'none';
+
+                if (pets.length === 0) {
+                    emptyElement.style.display = 'block';
+                    countElement.textContent = 'Nenhum pet cadastrado';
+                } else {
+                    gridElement.style.display = 'grid';
+                    countElement.textContent = `${pets.length} pet${pets.length !== 1 ? 's' : ''} cadastrado${pets.length !== 1 ? 's' : ''}`;
+                    
+                    gridElement.innerHTML = pets.map(createPetCard).join('');
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar pets:', error);
+                loadingElement.innerHTML = '<p style="color: #e74c3c;">Erro ao carregar pets.</p>';
+            }
+        }
+
+        function createPetCard(pet) {
+            const photoUrl = pet.photo || pet.photoUrl || pet.photoURL || '';
+            
+            let photoElement;
+            if (photoUrl) {
+                photoElement = `<img src="${photoUrl}" alt="${pet.name}" onload="console.log('Imagem carregada com sucesso')" onerror="console.log('Erro ao carregar imagem:', this.src); this.style.display='none'; this.parentElement.innerHTML='${pet.name.charAt(0).toUpperCase()}';">`;
+            } else {
+                photoElement = pet.name.charAt(0).toUpperCase();
+            }
+
+            return `
+                <div class="pet-card">
+                    <div class="pet-photo">
+                        ${photoElement}
+                    </div>
+                    <div class="pet-name">${pet.name}</div>
+                    <div class="pet-info">${pet.breed || 'Raça não informada'} • ${pet.age || 'Idade não informada'}</div>
+                    <div class="pet-actions">
+                        <button onclick="window.location.href='./pet_locate.html?id=${pet.id}'" class="btn btn-small btn-primary">
+                            👁️ Ver
+                        </button>
+                        <button onclick="window.location.href='./add_edit_pet.html?id=${pet.id}'" class="btn btn-small btn-primary">
+                            ✏️ Editar
+                        </button>
+                        <button onclick="viewQRCode('${pet.id}', '${pet.name}')" class="btn btn-small btn-qr">
+                            📱 QR Code
+                        </button>
+                        <button onclick="deletePet('${pet.id}', '${pet.name}')" class="btn btn-small btn-secondary">
+                            🗑️ Excluir
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load location history for user's pets - OTIMIZADO SEM ORDERBY
+        async function loadLocationHistory(userId) {
+            const loadingElement = document.getElementById('loadingLocations');
+            const containerElement = document.getElementById('locationsContainer');
+            const emptyElement = document.getElementById('emptyLocations');
+            const countElement = document.getElementById('locationsCount');
+
+            try {
+                loadingElement.style.display = 'block';
+                containerElement.style.display = 'none';
+                emptyElement.style.display = 'none';
+
+                // Get user's pets first
+                let petsSnapshot = await db.collection('pets').where('ownerID', '==', userId).get();
+                
+                if (petsSnapshot.size === 0) {
+                    petsSnapshot = await db.collection('pets').where('ownerId', '==', userId).get();
+                }
+
+                const petIds = petsSnapshot.docs.map(doc => doc.id);
+                const petNames = {};
+                petsSnapshot.docs.forEach(doc => {
+                    petNames[doc.id] = doc.data().name;
+                });
+                
+                if (petIds.length === 0) {
+                    loadingElement.style.display = 'none';
+                    emptyElement.style.display = 'block';
+                    countElement.textContent = 'Nenhum pet cadastrado';
+                    return;
+                }
+
+                // Buscar localizações onde ownerId = userId (SEM orderBy para evitar erro de índice)
+                const locationsSnapshot = await db.collection('location_history')
+                    .where('ownerId', '==', userId)
+                    .get();
+
+                const locations = [];
+                locationsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.petName = petNames[data.petId] || 'Pet desconhecido';
+                    locations.push({ id: doc.id, ...data });
+                });
+
+                // Ordenar no cliente (JavaScript) por timestamp (mais recente primeiro)
+                locations.sort((a, b) => {
+                    const aTime = a.timestamp?.toDate() || new Date(0);
+                    const bTime = b.timestamp?.toDate() || new Date(0);
+                    return bTime - aTime;
+                });
+
+                loadingElement.style.display = 'none';
+
+                if (locations.length === 0) {
+                    emptyElement.style.display = 'block';
+                    countElement.textContent = 'Nenhuma localização registrada';
+                } else {
+                    containerElement.style.display = 'block';
+                    countElement.textContent = `${locations.length} localização${locations.length !== 1 ? 'ões' : ''} registrada${locations.length !== 1 ? 's' : ''}`;
+                    
+                    containerElement.innerHTML = locations.map(createLocationItem).join('');
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar histórico de localizações:', error);
+                loadingElement.innerHTML = '<p style="color: #e74c3c;">Erro ao carregar localizações.</p>';
+            }
+        }
+
+        function createLocationItem(location) {
+            const timestamp = location.timestamp?.toDate() || new Date();
+            const timeString = timestamp.toLocaleString('pt-BR');
+            const coordinates = `${location.latitude?.toFixed(6) || 'N/A'}, ${location.longitude?.toFixed(6) || 'N/A'}`;
+            const mapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+            
+            return `
+                <div class="location-item">
+                    <div class="location-pet-avatar">
+                        ${location.petName.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="location-info">
+                        <div class="location-pet">
+                            🐾 ${location.petName}
+                        </div>
+                        <div class="location-address">
+                            📍 ${location.address || 'Endereço não disponível'}
+                        </div>
+                        <div class="location-coordinates">
+                            🌐 ${coordinates}
+                        </div>
+                        <div class="location-time">
+                            🕒 ${timeString}
+                        </div>
+                    </div>
+                    <div class="location-actions">
+                        <a href="${mapsUrl}" target="_blank" class="btn-map">
+                            🗺️ Ver no Mapa
+                        </a>
+                        <button onclick="confirmDeleteLocation('${location.id}', '${location.petName}')" class="btn-delete">
+                            🗑️ Excluir
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Função para confirmar exclusão de localização
+        function confirmDeleteLocation(locationId, petName) {
+            document.getElementById('confirmMessage').textContent = 
+                `Tem certeza que deseja excluir a localização do pet "${petName}"? Esta ação não pode ser desfeita.`;
+            
+            document.getElementById('confirmDeleteBtn').onclick = () => {
+                deleteLocation(locationId, petName);
+                closeConfirmModal();
+            };
+            
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        // Função para fechar modal de confirmação
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        // Função para excluir localização
+        async function deleteLocation(locationId, petName) {
+            try {
+                await db.collection('location_history').doc(locationId).delete();
+                
+                showToast('success', 'Localização Excluída', `Localização do pet "${petName}" foi removida do histórico.`);
+                
+                // Recarregar histórico de localizações
+                if (currentUser) {
+                    loadLocationHistory(currentUser.uid);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao excluir localização:', error);
+                showToast('error', 'Erro', 'Não foi possível excluir a localização.');
+            }
+        }
+
+       // Delete pet function - MODIFICADO PARA USAR MODAL
+        let petToDelete = null; // Variável para armazenar dados do pet a ser excluído
+
+        function deletePet(petId, petName) {
+            // Armazenar dados do pet para exclusão
+            petToDelete = { id: petId, name: petName };
+            
+            // Atualizar mensagem do modal
+            document.getElementById('deletePetMessage').textContent = 
+                `Tem certeza que deseja excluir o pet "${petName}"? Esta ação não pode ser desfeita.`;
+            
+            // Configurar botão de confirmação
+            const confirmBtn = document.getElementById('confirmDeletePetBtn');
+            confirmBtn.onclick = confirmDeletePet;
+            
+            // Mostrar modal
+            document.getElementById('deletePetModal').classList.add('show');
+        }
+
+        // Função para fechar modal de exclusão de pet
+        function closeDeletePetModal() {
+            document.getElementById('deletePetModal').classList.remove('show');
+            petToDelete = null;
+        }
+
+        // Função para confirmar exclusão do pet
+        async function confirmDeletePet() {
+            if (!petToDelete) return;
+            
+            try {
+                await db.collection('pets').doc(petToDelete.id).delete();
+                showToast('success', 'Pet Excluído', `${petToDelete.name} foi removido com sucesso.`);
+                
+                // Fechar modal
+                closeDeletePetModal();
+                
+                // Reload pets
+                if (currentUser) {
+                    loadUserPets(currentUser.uid);
+                }
+            } catch (error) {
+                console.error('Erro ao excluir pet:', error);
+                showToast('error', 'Erro', 'Não foi possível excluir o pet.');
+            }
+        }
+
+        // QR Code generation functions
+        const IMGBB_API_KEY = ''; // Substitua pela sua chave da API ImgBB
+
+        function generateQRCode(petId) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const qrCodeContainer = document.createElement('div');
+                    qrCodeContainer.style.display = 'none';
+                    document.body.appendChild(qrCodeContainer);
+                    
+                    const qrCode = new QRCode(qrCodeContainer, {
+                        text: `https://pet-locate-42222.web.app/pets/pet_locate.html?id=${petId}`,
+                        width: 132,
+                        height: 132,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    
+                    setTimeout(() => {
+                        const canvas = qrCodeContainer.querySelector('canvas');
+                        if (canvas) {
+                            const dataUrl = canvas.toDataURL('image/png');
+                            document.body.removeChild(qrCodeContainer);
+                            resolve(dataUrl);
+                        } else {
+                            document.body.removeChild(qrCodeContainer);
+                            reject(new Error('Falha ao gerar QR Code'));
+                        }
+                    }, 500);
+                    
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        async function uploadQRCodeToImgBB(qrCodeDataUrl, petName) {
+            try {
+                if (!IMGBB_API_KEY || IMGBB_API_KEY === '') {
+                    console.log('Chave da API ImgBB não configurada, usando Data URL diretamente');
+                    return null;
+                }
+                
+                const base64Data = qrCodeDataUrl.split(',')[1];
+                
+                const formData = new FormData();
+                formData.append('key', IMGBB_API_KEY);
+                formData.append('image', base64Data);
+                formData.append('name', `qrcode_${petName}_${Date.now()}`);
+                
+                const uploadResponse = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const uploadResult = await uploadResponse.json();
+                
+                if (uploadResult.success) {
+                    console.log('QR Code enviado para ImgBB:', uploadResult.data.url);
+                    return uploadResult.data.url;
+                } else {
+                    console.error('Erro no upload para ImgBB:', uploadResult);
+                    throw new Error('Falha no upload para ImgBB');
+                }
+            } catch (error) {
+                console.error('Erro ao fazer upload do QR Code para ImgBB:', error);
+                throw error;
+            }
+        }
+
+        async function saveQRCodeToFirestore(petId, qrCodeUrl) {
+            try {
+                await db.collection('pets').doc(petId).update({
+                    qrCodeUrl: qrCodeUrl,
+                    qrCodeGeneratedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log('URL do QR Code salva no Firestore');
+            } catch (error) {
+                console.error('Erro ao salvar QR Code no Firestore:', error);
+                throw error;
+            }
+        }
+
+        async function processQRCodeGeneration(petId, petName) {
+            try {
+                showToast('info', 'Gerando QR Code', 'Criando QR Code para o pet...');
+                
+                // Generate QR Code (Data URL)
+                const qrCodeDataUrl = await generateQRCode(petId);
+                
+                // Upload to ImgBB
+                const imgbbUrl = await uploadQRCodeToImgBB(qrCodeDataUrl, petName);
+                
+                if (imgbbUrl) {
+                    // Save ImgBB URL to Firestore
+                    await saveQRCodeToFirestore(petId, imgbbUrl);
+                    showToast('success', 'QR Code Criado', 'QR Code gerado e salvo com sucesso!');
+                    return imgbbUrl;
+                } else {
+                    // Fallback: save Data URL directly if ImgBB upload fails or API key is missing
+                    await saveQRCodeToFirestore(petId, qrCodeDataUrl);
+                    showToast('success', 'QR Code Criado', 'QR Code gerado com sucesso!');
+                    return qrCodeDataUrl;
+                }
+                
+            } catch (error) {
+                console.error('Erro no processo de geração do QR Code:', error);
+                showToast('error', 'Erro', 'Falha ao gerar QR Code');
+                return null;
+            }
+        }
+
+        // View QR Code function - AGORA EXIBE EM MODAL
+        async function viewQRCode(petId, petName) {
+            try {
+                // Check if pet already has QR Code
+                const petDoc = await db.collection('pets').doc(petId).get();
+                if (!petDoc.exists) {
+                    showToast('error', 'Erro', 'Pet não encontrado');
+                    return;
+                }
+                
+                const petData = petDoc.data();
+                let qrCodeUrl = petData.qrCodeUrl;
+                
+                // If no QR Code exists, generate one
+                if (!qrCodeUrl) {
+                    qrCodeUrl = await processQRCodeGeneration(petId, petName);
+                    if (!qrCodeUrl) {
+                        return; // Error already shown in processQRCodeGeneration
+                    }
+                }
+
+                // Display QR Code in modal
+                const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+                qrCodeDisplay.innerHTML = `<img src="${qrCodeUrl}" alt="QR Code de ${petName}">`;
+                
+                // Set download link for the button
+                const downloadBtn = document.getElementById('downloadQrCodeBtn');
+                downloadBtn.href = qrCodeUrl;
+                downloadBtn.download = `QRCode-${petName}.png`;
+
+                document.getElementById('qrCodeModal').classList.add('show');
+                
+            } catch (error) {
+                console.error('Erro ao exibir QR Code:', error);
+                showToast('error', 'Erro', 'Não foi possível exibir o QR Code.');
+            }
+        }
+
+        // Função para fechar o modal do QR Code
+        function closeQrCodeModal() {
+            document.getElementById('qrCodeModal').classList.remove('show');
+            document.getElementById('qrCodeDisplay').innerHTML = ''; // Limpa o conteúdo
+        }
+
+        // Toast notification system
+        function showToast(type, title, message) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                info: 'ℹ️',
+                warning: '⚠️'
+            };
+            
+            const titles = {
+                success: title || 'Sucesso',
+                error: title || 'Erro',
+                info: title || 'Informação',
+                warning: title || 'Aviso'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type]}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="removeToast(this.parentElement)">×</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Auto remove after 6 seconds
+            setTimeout(() => removeToast(toast), 6000);
+        }
+        
+        function removeToast(toast) {
+            if (toast && toast.parentElement) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                }, 400);
+            }
+        }
+
+        // Funções para gerenciar tokens do usuário
+        let tokensVisible = false;
+
+        // Alternar visibilidade dos tokens (agora abre modal)
+        function toggleTokensVisibility() {
+            document.getElementById('tokensModal').classList.add('show');
+            if (currentUser) {
+                loadUserTokens(currentUser.uid, true);
+            }
+        }
+
+        // Fechar modal de tokens
+        function closeTokensModal() {
+            document.getElementById('tokensModal').classList.remove('show');
+        }
+
+        // Carregar tokens do usuário
+        async function loadUserTokens(userId, forceShow = false) {
+            try {
+                document.getElementById('loadingTokens').style.display = 'block';
+                document.getElementById('tokensContainer').style.display = 'none';
+                document.getElementById('emptyTokens').style.display = 'none';
+                
+                const userDoc = await db.collection('users').doc(userId).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    const tokens = userData.tokens || [];
+                    
+                    document.getElementById('loadingTokens').style.display = 'none';
+                    
+                    if (tokens.length > 0) {
+                        displayUserTokens(tokens);
+                        document.getElementById('tokensContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('emptyTokens').style.display = 'block';
+                    }
+                } else {
+                    document.getElementById('loadingTokens').style.display = 'none';
+                    document.getElementById('emptyTokens').style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar tokens do usuário:', error);
+                document.getElementById('loadingTokens').style.display = 'none';
+                document.getElementById('emptyTokens').style.display = 'block';
+            }
+        }
+
+        // Exibir tokens do usuário
+        function displayUserTokens(tokens) {
+            const tokensList = document.getElementById('tokensList');
+            tokensList.innerHTML = '';
+            
+            tokens.forEach((token, index) => {
+                const tokenCard = document.createElement('div');
+                tokenCard.className = 'token-card';
+                tokenCard.onclick = () => copyTokenToClipboard(token);
+                tokenCard.innerHTML = `
+                    <div class="token-code">${token}</div>
+                `;
+                tokensList.appendChild(tokenCard);
+            });
+        }
+
+        // Copiar token para área de transferência
+        async function copyTokenToClipboard(token) {
+            try {
+                await navigator.clipboard.writeText(token);
+                showToast('success', 'Token Copiado', `Token ${token} copiado para a área de transferência!`);
+            } catch (error) {
+                console.error('Erro ao copiar token:', error);
+                // Fallback para navegadores mais antigos
+                const textArea = document.createElement('textarea');
+                textArea.value = token;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('success', 'Token Copiado', `Token ${token} copiado para a área de transferência!`);
+            }
+        }
+
+        // Fechar modal ao clicar fora dele
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeConfirmModal();
+            }
+        });
+
+        document.getElementById('qrCodeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQrCodeModal();
+            }
+        });
+
+        document.getElementById('tokenSelectorModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTokenSelectorModal();
+            }
+        });
+
+        document.getElementById('tokensModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTokensModal();
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="../manifest.json">
+    <!-- Incluindo qrcode.js -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("../service-worker.js")
+                    .then(registration => {
+                        console.log("Service Worker registrado com sucesso:", registration);
+                    })
+                    .catch(error => {
+                        console.log("Falha no registro do Service Worker:", error);
+                    });
+            });
+        }
+    </script>
+    <title>Pet Locate - Informações do Pet</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { max-width: 420px; width: 100%; background: rgba(255,255,255,0.95); border-radius: 24px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px);} to {opacity:1; transform: translateY(0);} }
+        .pet-photo { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 24px; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:500; text-align:center; box-shadow:0 8px 24px rgba(102,126,234,0.3); transition: transform .3s ease; cursor:pointer; overflow:hidden; }
+        .pet-photo:hover { transform: scale(1.05); }
+        .pet-photo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+        .pet-name { background: rgba(102,126,234,0.1); border:2px solid rgba(102,126,234,0.2); border-radius:16px; padding:16px; margin-bottom:16px; text-align:center; font-size:24px; font-weight:600; color:#2c3e50; }
+        .info-item { background: rgba(255,255,255,0.8); border:2px solid rgba(0,0,0,0.1); border-radius:16px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+        .info-label { font-weight:600; color:#34495e; font-size:14px; }
+        .info-value { color:#2c3e50; font-weight:500; }
+        .address-section { margin:24px 0; padding:20px; background: rgba(52,152,219,0.1); border-radius:16px; border:2px solid rgba(52,152,219,0.2); }
+        .address-title { font-weight:600; color:#2c3e50; margin-bottom:12px; font-size:16px; }
+        .address-text { color:#34495e; line-height:1.5; margin-bottom:16px; }
+        .map-container { width:100%; height:200px; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+        .location-btn { width:100%; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; border:none; border-radius:16px; padding:18px; font-size:16px; font-weight:600; cursor:pointer; transition: all .3s ease; box-shadow:0 4px 16px rgba(102,126,234,0.3); margin-top:24px; }
+        .location-btn:disabled { background:#bdc3c7; cursor:not-allowed; box-shadow:none; }
+        .emergency-info { background: rgba(231,76,60,0.1); border:2px solid rgba(231,76,60,0.2); border-radius:16px; padding:16px; margin-bottom:24px; text-align:center; }
+        .emergency-title { color:#e74c3c; font-weight:600; font-size:18px; margin-bottom:8px; }
+        .emergency-text { color:#c0392b; font-size:14px; }
+        
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+            width: 100%;
+        }
+        
+        /* Toast Styles */
+        .toast {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .toast.success .toast-icon {
+            background: #10b981;
+            color: white;
+        }
+        
+        .toast.error .toast-icon {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        
+        .toast-message {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 24px; }
+            .pet-photo { width: 100px; height: 100px; }
+            .pet-name { font-size: 20px; }
+            .toast-container { max-width: 300px; right: 10px; top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <div class="container">
+        <div class="emergency-info">
+            <div class="emergency-title">🐾 Pet Perdido?</div>
+            <div class="emergency-text">Se você encontrou este pet, por favor ajude-o a voltar para casa!</div>
+        </div>
+        
+        <div class="pet-photo" id="petPhoto">
+            Foto do Pet
+        </div>
+        
+        <div class="pet-name" id="petName">Carregando...</div>
+        
+        <div class="info-item">
+            <span class="info-label">🐾Raça:</span>
+            <span class="info-value" id="petBreed">-</span>
+        </div>
+        
+        <div class="info-item">
+        <span class="info-label">🎂Idade:</span>
+        <span class="info-value" id="petAge">-</span>
+        </div>
+
+        <div class="info-item">
+        <span class="info-label">⚖️Peso:</span>
+        <span class="info-value" id="petWeight">-</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">🏷️Sexo:</span>
+            <span class="info-value" id="petGender">-</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">🖌️Cor:</span>
+            <span class="info-value" id="petColor">-</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">👤Tutor:</span>
+            <span class="info-value" id="ownerName">-</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">📞Telefone:</span>
+            <span class="info-value" id="ownerPhone">-</span>
+        </div>
+        
+        <div class="address-section">
+            <div class="address-title">🚩 Endereço do Tutor</div>
+            <div class="address-text" id="ownerAddress">Carregando endereço...</div>
+            <div class="map-container">
+                <iframe id="mapFrame" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+        
+        <button class="location-btn" id="locationBtn" onclick="sendLocation()">
+             📍 Envie minha localização para o tutor
+        </button>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js"></script>
+    <script>
+
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let petData = {};
+
+        function isFiniteNumber(value) {
+            const num = parseFloat(value);
+            return Number.isFinite(num) ? num : null;
+        }
+
+        function showToast(type, title, message) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${type === 'success' ? '✓' : '✕'}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="removeToast(this.parentElement)">×</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => removeToast(toast), 5000);
+        }
+        
+        function removeToast(toast) {
+            if (toast && toast.parentElement) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        async function loadPetDataFromFirestore(){
+            const urlParams = new URLSearchParams(window.location.search);
+            const petId = urlParams.get('id');
+            if(!petId){ 
+                showToast('error', 'Erro', 'ID do pet não fornecido na URL. Ex: ?id=seu_id_do_pet');
+                console.error('Sem id na URL'); 
+                return; 
+            }
+            try{
+                console.log('Buscando pet id:', petId);
+                const docRef = db.collection('pets').doc(petId);
+                const doc = await docRef.get();
+                if(!doc.exists){ 
+                    showToast('error', 'Pet não encontrado', 'Pet não encontrado no banco de dados.');
+                    console.error('Documento não existe'); 
+                    return; 
+                }
+                petData = doc.data() || {};
+                console.log('Dados recebidos do Firestore:', petData);
+                
+                // Normalizar tipos numéricos
+                petData.ownerLat = isFiniteNumber(petData.ownerLat);
+                petData.ownerLng = isFiniteNumber(petData.ownerLng);
+
+                // Preencher UI com formatação
+                setText('petName', petData.name);
+                setText('petBreed', petData.breed);
+                setText('petAge', formatAge(petData.age));
+                setText('petWeight', formatWeight(petData.weight));
+                setText('petGender', petData.gender);
+                setText('petColor', petData.color);
+                setText('ownerName', petData.ownerName || 'N/A');
+                
+                // Format phone number
+                const formattedPhone = formatPhoneNumber(petData.ownerPhone, petData.ownerCountryCode);
+                setText('ownerPhone', formattedPhone);
+                
+                // Format address
+                const formattedAddress = formatAddress(petData);
+                document.getElementById('ownerAddress').innerHTML = formattedAddress;
+
+                if(petData.photo){ document.getElementById('petPhoto').innerHTML = `<img src="${petData.photo}" alt="Foto do ${petData.name || 'pet'}">`; }
+                updateMap();
+            }catch(err){ 
+                console.error('Erro ao carregar Firestore:', err); 
+                showToast('error', 'Erro', 'Erro ao carregar dados do pet. Verifique o ID.');
+            }
+        }
+
+        function setText(id, val){ document.getElementById(id).textContent = val || 'N/A'; }
+
+         function formatAge(months) {
+        if (!months) return 'N/A';
+
+        if (months >= 12) {
+            const anos = Math.floor(months / 12);
+            const mesesRest = months % 12;
+            return mesesRest > 0
+                ? `${anos} ano(s) e ${mesesRest} mês(es)`
+                : `${anos} ano(s)`;
+        }
+        return `${months} mês(es)`;
+    }
+
+    function formatWeight(grams) {
+        if (!grams) return 'N/A';
+
+        return grams >= 1000
+            ? `${(grams / 1000).toFixed(2)} kg`
+            : `${grams} g`;
+    }
+
+        function formatPhoneNumber(phone, countryCode) {
+            if (!phone) return 'N/A';
+            
+            const cleanPhone = phone.replace(/\D/g, '');
+            const code = countryCode || '+55';
+            
+            if (code === '+55' && cleanPhone.length >= 10) {
+                // Brazilian phone formatting
+                if (cleanPhone.length === 11) {
+                    return `${code} (${cleanPhone.substring(0, 2)}) ${cleanPhone.substring(2, 7)}-${cleanPhone.substring(7)}`;
+                } else if (cleanPhone.length === 10) {
+                    return `${code} (${cleanPhone.substring(0, 2)}) ${cleanPhone.substring(2, 6)}-${cleanPhone.substring(6)}`;
+                }
+            }
+            
+            return `${code} ${phone}`;
+        }
+
+        function formatAddress(petData) {
+            if (petData.ownerStreet && petData.ownerNumber && petData.ownerNeighborhood && petData.ownerCity && petData.ownerState) {
+                // New format with individual fields
+                let address = `${petData.ownerStreet}, ${petData.ownerNumber}`;
+                if (petData.ownerComplement) {
+                    address += `, ${petData.ownerComplement}`;
+                }
+                address += `<br>${petData.ownerNeighborhood}<br>${petData.ownerCity} - ${petData.ownerState}`;
+                if (petData.ownerCep) {
+                    address += `<br>CEP: ${petData.ownerCep}`;
+                }
+                return address;
+            } else if (petData.ownerAddress) {
+                // Fallback to old format
+                return petData.ownerAddress.replace(/\n/g, '<br>');
+            }
+            return 'Endereço não informado';
+        }
+
+        function updateMap(){
+            const mapFrame = document.getElementById('mapFrame');
+            
+            if(Number.isFinite(petData.ownerLat) && Number.isFinite(petData.ownerLng)){
+                // Use precise coordinates if available
+                const embedUrl = `https://maps.google.com/maps?q=${petData.ownerLat},${petData.ownerLng}&z=17&output=embed`;
+                mapFrame.src = embedUrl;
+            } else if(petData.ownerAddress || (petData.ownerStreet && petData.ownerCity)) {
+                // Fallback to address search
+                const address = petData.ownerAddress || `${petData.ownerStreet}, ${petData.ownerCity}, ${petData.ownerState}`;
+                const encodedAddress = encodeURIComponent(address);
+                const embedUrl = `https://maps.google.com/maps?q=${encodedAddress}&z=15&output=embed`;
+                mapFrame.src = embedUrl;
+            } else {
+                mapFrame.src = 'about:blank';
+                console.warn('Nenhuma informação de localização disponível');
+            }
+        }
+
+        async function sendLocation() {
+            const btn = document.getElementById('locationBtn');
+            btn.disabled = true;
+            btn.textContent = '📍 Obtendo localização...';
+            
+            if (!navigator.geolocation) {
+                showToast('error', 'Erro', 'Geolocalização não suportada neste navegador');
+                btn.disabled = false;
+                btn.textContent = '📍 Envie minha localização para o tutor';
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    try {
+                        const { latitude, longitude } = position.coords;
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const petId = urlParams.get('id');
+                        
+                        if (!petId) {
+                            throw new Error('ID do pet não encontrado');
+                        }
+                        
+                        // Get address from coordinates
+                        let address = 'Localização não identificada';
+                        try {
+                            const geocodeResponse = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt`);
+                            const geocodeData = await geocodeResponse.json();
+                            if (geocodeData.locality || geocodeData.city) {
+                                address = `${geocodeData.locality || geocodeData.city}, ${geocodeData.principalSubdivision || geocodeData.countryName}`;
+                            }
+                        } catch (geocodeError) {
+                            console.warn('Erro ao obter endereço:', geocodeError);
+                        }
+                        
+                        // CORREÇÃO: Incluir ownerId nos dados salvos
+                        const locationData = {
+                            petId: petId,
+                            petName: petData.name || 'Pet',
+                            latitude: latitude,
+                            longitude: longitude,
+                            address: address,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            reportedBy: 'anonymous'
+                        };
+                        
+                        // Adicionar ownerId se disponível (compatibilidade com ambos os campos)
+                        if (petData.ownerID) {
+                            locationData.ownerId = petData.ownerID;
+                        } else if (petData.ownerId) {
+                            locationData.ownerId = petData.ownerId;
+                        }
+                        
+                        console.log('Salvando localização com dados:', locationData);
+                        
+                        // Save location to Firestore
+                        await db.collection('location_history').add(locationData);
+                        
+                        // Send notification to pet owner
+                        await sendNotificationToPetOwner(petId, latitude, longitude, address);
+                        
+                        showToast('success', 'Localização Enviada', 'Sua localização foi enviada para o tutor do pet!');
+                        btn.textContent = '✅ Localização enviada!';
+                        
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.textContent = '📍 Envie minha localização para o tutor';
+                        }, 5000);
+                        
+                    } catch (error) {
+                        console.error('Erro ao enviar localização:', error);
+                        showToast('error', 'Erro', 'Erro ao enviar localização. Tente novamente.');
+                        btn.disabled = false;
+                        btn.textContent = '📍 Envie minha localização para o tutor';
+                    }
+                },
+                (error) => {
+                    console.error('Erro de geolocalização:', error);
+                    let errorMessage = 'Erro ao obter localização';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Permissão de localização negada';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Localização indisponível';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Tempo limite excedido';
+                            break;
+                    }
+                    
+                    showToast('error', 'Erro', errorMessage);
+                    btn.disabled = false;
+                    btn.textContent = '📍 Envie minha localização para o tutor';
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000
+                }
+            );
+        }
+
+        async function sendNotificationToPetOwner(petId, latitude, longitude, address) {
+            try {
+                // Get pet owner data
+                const petDoc = await db.collection('pets').doc(petId).get();
+                if (!petDoc.exists) return;
+                
+                const petData = petDoc.data();
+                // Compatibilidade com ambos os campos
+                const ownerId = petData.ownerID || petData.ownerId;
+                
+                if (!ownerId) {
+                    console.warn('ownerId não encontrado nos dados do pet');
+                    return;
+                }
+                
+                // Get owner data for FCM token
+                const ownerDoc = await db.collection('users').doc(ownerId).get();
+                if (!ownerDoc.exists) {
+                    console.warn('Documento do usuário não encontrado');
+                    return;
+                }
+                
+                const userData = ownerDoc.data();
+                
+                // Save notification to Firestore
+                await db.collection('notifications').add({
+                    userId: ownerId,
+                    petId: petId,
+                    petName: petData.name || 'Seu pet',
+                    type: 'pet_found',
+                    title: 'Pet Encontrado!',
+                    message: `${petData.name || 'Seu pet'} foi encontrado em ${address}`,
+                    latitude: latitude,
+                    longitude: longitude,
+                    address: address,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    read: false
+                });
+                
+                // Send push notification if FCM token exists
+                if (userData.fcmToken) {
+                    console.log('Notificação push seria enviada para:', userData.fcmToken);
+                }
+                
+                console.log('Notificação salva no Firestore');
+            } catch (error) {
+                console.error('Erro ao enviar notificação push:', error);
+                // Não falhar se não conseguir enviar notificação
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPetDataFromFirestore);
+        document.getElementById('petPhoto').addEventListener('click', function(){ this.style.transform='scale(0.95)'; setTimeout(()=>{ this.style.transform='scale(1)'; }, 150); });
+    </script>
+</body>
+</html>
+
