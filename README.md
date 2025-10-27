@@ -28,6 +28,8 @@ Cada pet cadastrado gera um **QR Code único**, que direciona para uma **página
 
 Além disso, o tutor pode gerenciar múltiplos pets, tokens e histórico de localização em uma interface simples e moderna.
 
+Após o login, um Admin da plataforma disponibiliza tokens para uso. Cada cadastro de pet custa 1 token.
+
 ---
 
 ## ⚙️ Recursos Principais
@@ -36,11 +38,7 @@ Além disso, o tutor pode gerenciar múltiplos pets, tokens e histórico de loca
 ✅ **Cadastro e edição de pets** com foto e dados do tutor  
 ✅ **Geração automática de QR Codes**  
 ✅ **Painel administrativo de tokens**  
-✅ **Página pública do pet** com mapa e informações  
-✅ **Interface responsiva e animada**  
-✅ **Modo offline (PWA)** com cache inteligente  
-✅ **Sistema de notificações toast** e modais de confirmação  
-✅ **Design clean com gradientes suaves**
+✅ **Página pública do pet** com mapa e informações   
 
 ---
 
@@ -86,10 +84,12 @@ localizacao/
 
 ## ⚡ PWA e Service Worker
 
-O app foi configurado para funcionar **offline**:
+O app foi configurado para funcionar **offline** (ainda em fase de testes):
 - `service-worker.js` gerencia o cache dos principais arquivos;
 - `manifest.json` define ícones, cores e nome do app;
 - É possível **instalar o Pet Locate** em dispositivos móveis e desktops.
+
+Ocorre alguns erros de cache dentro de sistemas iOS. 
 
 ---
 
