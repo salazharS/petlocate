@@ -7,8 +7,7 @@ Através de **QR Codes personalizados**, o sistema permite que qualquer pessoa q
 
 ## 🚀 Demonstração
 
-🔗 **Acesse o projeto:** [https://seuusuario.github.io/pet-locate/](https://seuusuario.github.io/pet-locate/)  
-📱 Pode ser instalado como aplicativo em qualquer dispositivo (Android, iOS ou Desktop).
+🔗 **Acesse o projeto:** https://pet-locate-42222.web.app/.  
 
 ---
 
@@ -52,7 +51,7 @@ Além disso, o tutor pode gerenciar múltiplos pets, tokens e histórico de loca
 ## 🧩 Arquitetura do Projeto
 
 ```bash
-pet-locate/
+pet-locate/public
 │
 ├── index.html               # Tela de login e autenticação
 ├── dashboard.html           # Painel principal do tutor
@@ -80,36 +79,6 @@ pet-locate/
 | **QRCode.js** | Geração de QR Codes para pets |
 | **Google Maps Embed API** | Exibição do endereço do tutor |
 | **Toast / Modal System** | Notificações e feedback ao usuário |
-
----
-
-## 🧰 Instalação e Uso Local
-
-```bash
-# Clone o repositório
-git clone https://github.com/seuusuario/pet-locate.git
-
-# Acesse a pasta
-cd pet-locate
-
-# Abra o index.html no navegador
-```
-
-> 💡 Dica: use uma extensão como **Live Server (VSCode)** para testar as rotas internas e o PWA localmente.
-
----
-
-## 🌍 Publicação no GitHub Pages
-
-1. Vá em **Settings → Pages**
-2. Selecione:
-   - **Source:** `Deploy from branch`
-   - **Branch:** `main`
-   - **Folder:** `/ (root)`
-3. Salve e acesse:
-   ```
-   https://seuusuario.github.io/pet-locate/
-   ```
 
 ---
 
