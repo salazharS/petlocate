@@ -16,12 +16,8 @@ Através de **QR Codes personalizados**, o sistema permite que qualquer pessoa q
 - [Recursos Principais](#-recursos-principais)
 - [Arquitetura do Projeto](#-arquitetura-do-projeto)
 - [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Instalação e Uso Local](#-instalação-e-uso-local)
-- [Publicação no GitHub Pages](#-publicação-no-github-pages)
 - [PWA e Service Worker](#-pwa-e-service-worker)
 - [Capturas de Tela](#-capturas-de-tela)
-- [Contribuição](#-contribuição)
-- [Licença](#-licença)
 
 ---
 
@@ -97,9 +93,11 @@ O app foi configurado para funcionar **offline**:
 
 ---
 
-## 🖼️ Capturas de Tela (opcional)
+## 🖼️ Capturas de Tela 
 
-> *(adicione imagens aqui futuramente)*  
-> - `index.html` — Tela de login  
+<img width="2330" height="2339" alt="image" src="https://github.com/user-attachments/assets/753dbb92-1e52-4e73-9860-c118ad2ada0a" />
+> - `pet_locate.html` — Página pública via QR (https://pet-locate-42222.web.app/pets/pet_locate.html?id=UKjmnB2MeHmhS09uGqdv
+
+<img width="2528" height="1326" alt="image" src="https://github.com/user-attachments/assets/b0830a96-4ffc-4c5a-b767-5d64fd3f12bd" />
 > - `dashboard.html` — Painel de pets  
-> - `pet_locate.html` — Página pública via QR  
+
