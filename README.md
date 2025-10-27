@@ -63,7 +63,6 @@ localizacao/
         ├── pet_locate.html          # Página pública (QR Code)
         ├── manifest.json            # Manifesto específico da seção /pets
         ├── service-worker.js        # Cache específico da seção /pets
-        ├── dashboard modal de excluir ok sem localização.html  # Versão antiga/teste do dashboard
         └── images/                  # Ícones, logos e fotos dos pets
 ```
 
