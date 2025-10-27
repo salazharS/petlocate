@@ -51,20 +51,26 @@ Além disso, o tutor pode gerenciar múltiplos pets, tokens e histórico de loca
 ## 🧩 Arquitetura do Projeto
 
 ```bash
-pet-locate/public
-│
-├── index.html               # Tela de login e autenticação
-├── dashboard.html           # Painel principal do tutor
-├── add_edit_pet.html        # Formulário para cadastro/edição de pet
-├── pet_locate.html          # Página pública (QR Code)
-├── admin_tokens.html        # Painel administrativo de tokens
-├── 404.html                 # Página de erro personalizada
-│
-├── manifest.json            # Configuração PWA
-├── service-worker.js        # Cache e funcionamento offline
-│
-├── /images/                 # Ícones e logos
-└── /scripts/                # (opcional) scripts JS separados
+localizacao/
+└── public/
+    ├── index.html                   # Tela de login e autenticação
+    ├── 404.html                     # Página de erro personalizada
+    ├── manifest.json                # Manifesto principal do PWA
+    ├── service-worker.js            # Cache principal e funcionamento offline
+    ├── firebase-messaging-sw.js     # Worker do Firebase Messaging (notificações)
+    ├── package.json                 # Dependências do projeto
+    ├── package-lock.json            # Controle de versões das dependências
+    ├── node_modules/                # Dependências locais (npm)
+    │
+    └── pets/
+        ├── dashboard.html           # Painel principal do tutor
+        ├── add_edit_pet.html        # Formulário de cadastro/edição de pet
+        ├── admin_tokens.html        # Painel administrativo de tokens
+        ├── pet_locate.html          # Página pública (QR Code)
+        ├── manifest.json            # Manifesto específico da seção /pets
+        ├── service-worker.js        # Cache específico da seção /pets
+        ├── dashboard modal de excluir ok sem localização.html  # Versão antiga/teste do dashboard
+        └── images/                  # Ícones, logos e fotos dos pets
 ```
 
 ---
@@ -97,39 +103,3 @@ O app foi configurado para funcionar **offline**:
 > - `index.html` — Tela de login  
 > - `dashboard.html` — Painel de pets  
 > - `pet_locate.html` — Página pública via QR  
-
----
-
-## 🤝 Contribuição
-
-1. Faça um fork do projeto  
-2. Crie uma branch:
-   ```bash
-   git checkout -b feature/nome-da-sua-feature
-   ```
-3. Faça o commit das mudanças:
-   ```bash
-   git commit -m "Adiciona nova feature"
-   ```
-4. Envie a branch:
-   ```bash
-   git push origin feature/nome-da-sua-feature
-   ```
-5. Abra um **Pull Request**
-
----
-
-## 📜 Licença
-
-Este projeto está sob a licença **MIT**.  
-Sinta-se livre para utilizar e aprimorar o código.  
-Desenvolvido com 💜 por **Felipe Conceição Lula Lublanski (Felps)**.
-
----
-
-## 🧾 Créditos
-
-- Ícones: [Lucide Icons](https://lucide.dev)  
-- QRCode.js: [David Shim](https://github.com/davidshimjs/qrcodejs)  
-- PWA Base: Google Developers Docs  
-- Firebase Hosting (opcional): [firebase.google.com](https://firebase.google.com)
