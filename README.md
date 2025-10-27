@@ -94,8 +94,9 @@ Ocorre alguns erros de cache dentro de sistemas iOS.
 
 ## 🖼️ Capturas de Tela 
 
+<img width="2330" height="2339" alt="image" src="https://github.com/user-attachments/assets/3ec0e88b-f604-4f9a-948e-1c0628c4d535" />
+> - `pet_locate.html` — Página pública via QR (https://pet-locate-42222.web.app/pets/pet_locate.html?id=UKjmnB2MeHmhS09uGqdv)
 
-> - `pet_locate.html` — Página pública via QR 
 
 <img width="2528" height="1326" alt="image" src="https://github.com/user-attachments/assets/b0830a96-4ffc-4c5a-b767-5d64fd3f12bd" />
 > - `dashboard.html` — Painel de pets  
