@@ -23,12 +23,15 @@ Através de **QR Codes personalizados**, o sistema permite que qualquer pessoa q
 
 ## 🐶 Descrição
 
-O **Pet Locate** foi desenvolvido com o objetivo de facilitar o **reencontro de animais perdidos**.  
-Cada pet cadastrado gera um **QR Code único**, que direciona para uma **página pública** com seus dados básicos, foto e informações de contato do tutor.
+O Pet Locate é um web app progressivo (PWA) desenvolvido para o gerenciamento e identificação de animais de estimação, com foco em rastreamento, registro e recuperação de pets perdidos.
 
-Além disso, o tutor pode gerenciar múltiplos pets, tokens e histórico de localização em uma interface simples e moderna.
+Cada cadastro de pet gera automaticamente um QR Code único, que redireciona para uma página pública de identificação, exibindo informações essenciais como nome, foto, raça, cor e dados de contato do tutor.
+Essas páginas podem ser acessadas por qualquer pessoa que encontrar o animal, facilitando o contato direto com o responsável.
 
-Após o login, um Admin da plataforma disponibiliza tokens para uso. Cada cadastro de pet custa 1 token.
+O sistema permite que tutores gerenciem múltiplos cadastros, consultem seus tokens disponíveis e acompanhem o histórico de localização dos pets dentro de uma interface responsiva e organizada.
+
+O controle de acesso é feito por meio de autenticação via Firebase, e o modelo de utilização é baseado em tokens administrados por um usuário com perfil de Admin, responsável por liberar o uso da plataforma.
+Cada novo cadastro consome um token.
 
 ---
 
