@@ -5,13 +5,13 @@ Através de **QR Codes personalizados**, o sistema permite que qualquer pessoa q
 
 ---
 
-## 🚀 Demonstração
+##  Demonstração
 
-🔗 **Acesse o projeto:** https://pet-locate-42222.web.app/.  
+ **Acesse o projeto:** https://pet-locate-42222.web.app/.  
 
 ---
 
-## 🧭 Sumário
+##  Sumário
 - [Descrição](#-descrição)
 - [Recursos Principais](#-recursos-principais)
 - [Arquitetura do Projeto](#-arquitetura-do-projeto)
@@ -21,7 +21,7 @@ Através de **QR Codes personalizados**, o sistema permite que qualquer pessoa q
 
 ---
 
-## 🐶 Descrição
+##  Descrição
 
 O Pet Locate é um web app progressivo (PWA) desenvolvido para o gerenciamento e identificação de animais de estimação, com foco em rastreamento, registro e recuperação de pets perdidos.
 
@@ -35,17 +35,17 @@ Cada novo cadastro consome um token.
 
 ---
 
-## ⚙️ Recursos Principais
+##  Recursos Principais
 
-✅ **Autenticação com Google** via Firebase  
-✅ **Cadastro e edição de pets** com foto e dados do tutor  
-✅ **Geração automática de QR Codes**  
-✅ **Painel administrativo de tokens**  
-✅ **Página pública do pet** com mapa e informações   
+ **Autenticação com Google** via Firebase  
+ **Cadastro e edição de pets** com foto e dados do tutor  
+ **Geração automática de QR Codes**  
+ **Painel administrativo de tokens**  
+ **Página pública do pet** com mapa e informações   
 
 ---
 
-## 🧩 Arquitetura do Projeto
+##  Arquitetura do Projeto
 
 ```bash
 localizacao/
@@ -71,7 +71,7 @@ localizacao/
 
 ---
 
-## 🧠 Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 | Tecnologia | Finalidade |
 |-------------|------------|
@@ -84,7 +84,7 @@ localizacao/
 
 ---
 
-## ⚡ PWA e Service Worker
+##  PWA e Service Worker
 
 O app foi configurado para funcionar **offline** (ainda em fase de testes):
 - `service-worker.js` gerencia o cache dos principais arquivos;
@@ -95,7 +95,7 @@ Ocorre alguns erros de cache dentro de sistemas iOS.
 
 ---
 
-## 🖼️ Capturas de Tela 
+##  Capturas de Tela 
 
 <img width="2330" height="2339" alt="image" src="https://github.com/user-attachments/assets/3ec0e88b-f604-4f9a-948e-1c0628c4d535" />
 > - `pet_locate.html` — Página pública via QR (https://pet-locate-42222.web.app/pets/pet_locate.html?id=UKjmnB2MeHmhS09uGqdv)
